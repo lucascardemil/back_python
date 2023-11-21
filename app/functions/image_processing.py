@@ -1,3 +1,5 @@
+# pylint: disable=no-member
+# pylint: disable=unsubscriptable-object
 import base64
 import cv2
 from flask import current_app as app
@@ -11,7 +13,7 @@ def process_image(request_data):
     
     # Decode Base64 image data
     image_data = request_data.get("image", "")
-    image_data = image_data.split(",")[1]  # Get the actual Base64-encoded data
+    # image_data = image_data.split(",")[1]  # Get the actual Base64-encoded data
     image_bytes = base64.b64decode(image_data)
     image_np = np.frombuffer(image_bytes, dtype=np.uint8)
     
