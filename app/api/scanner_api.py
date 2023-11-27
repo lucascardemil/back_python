@@ -7,6 +7,7 @@ scanner_api_bp = Blueprint('scanner_api', __name__)
 def scanner():
     try:
         request_data = request.get_json()
+        print("Request data:", request_data)
 
         response_data = process_image(request_data)
         print("Response data:", response_data)
