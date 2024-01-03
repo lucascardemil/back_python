@@ -1,44 +1,45 @@
-from flask import Blueprint, jsonify, request
+# generador_qr.py
+import os
+from flask import Blueprint, jsonify
 import qrcode
 from PIL import Image
-import os
+import io
 
 generador_qr_bp = Blueprint('generador_qr', __name__)
 
 @generador_qr_bp.route('/api/generarqr', methods=['POST'])
-def generar_qr():
+def generar_qr_imagen(nombre, apellido, info_string):
     try:
-        data = request.get_json()
-
-        # Verifica si los datos necesarios están presentes en la solicitud
-        required_fields = ['id', 'nombre', 'apellido', 'nota']
-        if not all(field in data for field in required_fields):
-            return jsonify({'error': 'Faltan datos requeridos'}), 400
-
-        # Crea una cadena con la información
-        info_string = f"ID: {data['id']}\nNombre: {data['nombre']}\nApellido: {data['apellido']}\nNota: {data['nota']}"
-
-        # Crea el código QR
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
             border=4,
         )
+
         qr.add_data(info_string)
         qr.make(fit=True)
 
-        # Crea una imagen PIL a partir del código QR
         img = qr.make_image(fill_color="black", back_color="white")
 
-        # Guarda la imagen en un archivo en una ruta absoluta
-        project_root = os.path.dirname(os.path.abspath(__file__))
-        img_path = os.path.join(project_root, 'static', 'codigo_qr.png')
-        img.save(img_path)
+        # Ruta absoluta
+        ruta_absoluta = os.path.abspath(f"static/qr_images/qr_{nombre}_{apellido}.png")
 
-        response_data = {'image_path': img_path}
+        # Imprime la ruta para depuración
+        print("Ruta absoluta:", ruta_absoluta)
 
-        return jsonify(response_data)
+        # Crea la carpeta si no existe
+        carpeta_qr_images = os.path.dirname(ruta_absoluta)
+        if not os.path.exists(carpeta_qr_images):
+            os.makedirs(carpeta_qr_images)
+
+        # Guarda el archivo
+        img.save(ruta_absoluta)
+
+        # Devuelve solo la ruta de la imagen
+        return ruta_absoluta
     except Exception as e:
-        print("Error:", str(e))  
+        # Imprime el error para depuración
+        print("Error:", e)
+        # Devuelve un objeto Response con el error en el JSON y el código de estado 500
         return jsonify({'error': str(e)}), 500

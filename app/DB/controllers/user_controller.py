@@ -4,7 +4,7 @@ def crear_usuario(usuario):
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            sql = "INSERT INTO usuarios (username, email, contrasena, activo) VALUES (%s, %s, %s, %s)"
+            sql = "INSERT INTO users (username, email, contrasena, activo) VALUES (%s, %s, %s, %s)"
             cursor.execute(sql, (usuario['username'], usuario['email'], usuario['contrasena'], usuario['activo']))
         conexion.commit()
     except Exception as err:
@@ -18,7 +18,7 @@ def obtener_usuarios():
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            sql = "SELECT * FROM usuarios"
+            sql = "SELECT * FROM users"
             cursor.execute(sql)
             usuarios = cursor.fetchall()
     except Exception as err:
@@ -33,7 +33,7 @@ def obtener_usuario_por_id(user_id):
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            sql = "SELECT * FROM usuarios WHERE id = %s"
+            sql = "SELECT * FROM users WHERE id = %s"
             cursor.execute(sql, (user_id,))
             usuario = cursor.fetchone()
     except Exception as err:
@@ -47,7 +47,7 @@ def actualizar_usuario(user_id, nuevos_datos):
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            sql = "UPDATE usuarios SET username = %s, email = %s, contrasena = %s, activo = %s WHERE id = %s"
+            sql = "UPDATE users SET username = %s, email = %s, contrasena = %s, activo = %s WHERE id = %s"
             cursor.execute(sql, (nuevos_datos['username'], nuevos_datos['email'], nuevos_datos['contrasena'], nuevos_datos['activo'], user_id))
         conexion.commit()
     except Exception as err:
@@ -60,7 +60,7 @@ def eliminar_usuario(user_id):
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            sql = "DELETE FROM usuarios WHERE id = %s"
+            sql = "DELETE FROM users WHERE id = %s"
             cursor.execute(sql, (user_id,))
         conexion.commit()
     except Exception as err:

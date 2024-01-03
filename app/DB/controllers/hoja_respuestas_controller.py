@@ -1,5 +1,6 @@
 from app.DB.bd import obtener_conexion
 import json
+from typing import List, Dict
 
 def crear_hoja_respuestas(hoja_respuestas):
     try:
@@ -9,8 +10,8 @@ def crear_hoja_respuestas(hoja_respuestas):
             respuestas_json = json.dumps(hoja_respuestas['respuestas'])
 
             # Insertar nueva hoja de respuestas
-            sql = "INSERT INTO hoja_de_respuestas (asignatura, alternativas, preguntas, respuestas) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (hoja_respuestas['asignatura'], hoja_respuestas['alternativas'], hoja_respuestas['preguntas'], respuestas_json))
+            sql = "INSERT INTO hojas_de_respuestas (asignatura, alternativas, preguntas, respuestas, usuario_id) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(sql, (hoja_respuestas['asignatura'], hoja_respuestas['alternativas'], hoja_respuestas['preguntas'], respuestas_json, hoja_respuestas['usuario_id']))
         conexion.commit()
     except Exception as err:
         print('Error al crear hoja de respuestas:', err)
@@ -18,12 +19,30 @@ def crear_hoja_respuestas(hoja_respuestas):
         if conexion:
             conexion.close()
 
+
+def obtener_hojas_respuestas_por_usuario(usuario_id: int) -> List[Dict]:
+    try:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            # Obtener hojas de respuestas por usuario_id
+            sql = "SELECT * FROM hojas_de_respuestas WHERE usuario_id = %s"
+            cursor.execute(sql, (usuario_id,))
+            hojas_respuestas = cursor.fetchall()
+
+    except Exception as err:
+        print(f'Error al obtener hojas de respuestas para el usuario con ID {usuario_id}: {err}')
+    finally:
+        if conexion:
+            conexion.close()
+
+    return hojas_respuestas
+
 def obtener_hoja_respuestas():
     hojas_respuestas = []
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            sql = "SELECT * FROM hoja_de_respuestas"
+            sql = "SELECT * FROM hojas_de_respuestas"
             cursor.execute(sql)
             hojas_respuestas = cursor.fetchall()
     except Exception as err:
@@ -65,7 +84,7 @@ def eliminar_hoja_respuestas(hoja_respuestas_id):
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            sql = "DELETE FROM hoja_de_respuestas WHERE id = %s"
+            sql = "DELETE FROM hojas_de_respuestas WHERE id = %s"
             cursor.execute(sql, (hoja_respuestas_id,))
         conexion.commit()
     except Exception as err:

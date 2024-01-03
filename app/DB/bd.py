@@ -5,6 +5,6 @@ def obtener_conexion():
         host='localhost',
         user='root',
         password='Agustina1812',  # Agrega tu contraseña real aquí
-        db='lector',
+        db='lectorOMR',
     )
 

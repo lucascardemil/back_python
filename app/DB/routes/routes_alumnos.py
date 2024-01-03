@@ -5,7 +5,9 @@ from app.DB.controllers.alumnos_controller import (
     obtener_alumnos,
     obtener_alumno_por_id,
     actualizar_alumno,
-    eliminar_alumno
+    eliminar_alumno,
+    obtener_alumnos_por_curso,
+    eliminar_alumnos_por_curso
 )
 
 alumnos_db_bp = Blueprint('alumnos_db', __name__)
@@ -29,6 +31,28 @@ def obtener_todos_los_alumnos():
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
+@alumnos_db_bp.route('/alumnos/curso/<int:curso_id>', methods=['GET'])
+def obtener_alumnos_por_curso_route(curso_id):
+    try:
+        alumnos = obtener_alumnos_por_curso(curso_id)
+        # # Serializar manualmente los datos
+        # alumnos_serializados = [
+        #     {
+        #         "id": alumno[0],
+        #         "nombre": alumno[1],
+        #         "apellido": alumno[2],
+        #         "id_prueba": alumno[3],
+        #         "QR": str(alumno[6]),  # Convertir el blob a una cadena
+        #         "id_respuestas_alumnos": alumno[4],
+        #         "id_curso": alumno[5]
+        #     }
+        #     for alumno in alumnos
+        # ]
+        return jsonify(alumnos), 200
+    except Exception as err:
+        print(f'Error en obtener_alumnos_por_curso_route: {err}')
+        return jsonify({"error": str(err)}), 500
+    
 # Ruta para obtener un alumno por ID
 @alumnos_db_bp.route('/alumnos/<int:alumno_id>', methods=['GET'])
 def obtener_alumno_por_id_route(alumno_id):
@@ -46,6 +70,7 @@ def obtener_alumno_por_id_route(alumno_id):
 def actualizar_alumno_por_id(alumno_id):
     try:
         nuevos_datos = request.json
+        print('Datos recibidos:', nuevos_datos)
         actualizar_alumno(alumno_id, nuevos_datos)
         return jsonify({"mensaje": "Alumno actualizado exitosamente"}), 200
     except Exception as err:
@@ -60,3 +85,11 @@ def eliminar_alumno_por_id(alumno_id):
     except Exception as err:
         return jsonify({"error": str(err)}), 500
  
+
+@alumnos_db_bp.route('/eliminaralumnosporcurso/<int:id_curso>', methods=['DELETE'])
+def eliminar_alumnos_por_curso_endpoint(id_curso):
+    try:
+        eliminar_alumnos_por_curso(id_curso)
+        return jsonify({"message": "Alumnos eliminados correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

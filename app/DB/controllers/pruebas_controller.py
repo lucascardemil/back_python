@@ -6,8 +6,8 @@ def crear_prueba(prueba):
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             # Insertar nueva prueba
-            sql = "INSERT INTO pruebas (nota, activo, id_hoja_de_respuestas, id_respuestas_alumnos) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (prueba['nota'], prueba['activo'], prueba['id_hoja_de_respuestas'], prueba['id_respuestas_alumnos']))
+            sql = "INSERT INTO pruebas (nota, activo, id_hoja_de_respuestas) VALUES (%s, %s, %s)"
+            cursor.execute(sql, (prueba['nota'], prueba['activo'], prueba['id_hoja_de_respuestas']))
         conexion.commit()
     except Exception as err:
         print('Error al crear prueba:', err)
@@ -52,12 +52,11 @@ def actualizar_prueba(prueba_id, nuevos_datos):
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             # Actualizar una prueba por ID
-            sql = "UPDATE pruebas SET nota = %s, activo = %s, id_hoja_de_respuestas = %s, id_respuestas_alumnos = %s WHERE id = %s"
+            sql = "UPDATE pruebas SET nota = %s, activo = %s, id_hoja_de_respuestas = %s WHERE id = %s"
             cursor.execute(sql, (
                 nuevos_datos['nota'],
                 nuevos_datos['activo'],
                 nuevos_datos['id_hoja_de_respuestas'],
-                nuevos_datos['id_respuestas_alumnos'],
                 prueba_id
             ))
         conexion.commit()

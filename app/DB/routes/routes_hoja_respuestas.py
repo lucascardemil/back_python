@@ -5,6 +5,7 @@ from app.DB.controllers.hoja_respuestas_controller import (
     obtener_hoja_respuestas_por_id,
     actualizar_hoja_respuestas,
     eliminar_hoja_respuestas,
+    obtener_hojas_respuestas_por_usuario
 )
 
 hoja_respuestas_bp = Blueprint('hoja_respuestas', __name__)
@@ -28,6 +29,14 @@ def obtener_todas_las_hojas_respuestas():
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
+@hoja_respuestas_bp.route('/hojasrespuestasporusuario/<int:usuario_id>', methods=['GET'])
+def obtener_hojas_por_usuario(usuario_id):
+    try:
+        hojas_respuestas = obtener_hojas_respuestas_por_usuario(usuario_id)
+        return jsonify(hojas_respuestas), 200
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+   
 # Ruta para obtener una hoja de respuestas por ID
 @hoja_respuestas_bp.route('/hojarespuestas/<int:hoja_respuestas_id>', methods=['GET'])
 def obtener_hoja_respuestas_por_id_route(hoja_respuestas_id):

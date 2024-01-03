@@ -5,7 +5,8 @@ from app.DB.controllers.cursos_controllers import (
     obtener_cursos,
     obtener_curso_por_id,
     actualizar_curso,
-    eliminar_curso
+    eliminar_curso,
+    obtener_cursos_por_usuario
 )
 
 cursos_db_bp = Blueprint('cursos_db', __name__)
@@ -29,6 +30,14 @@ def obtener_todos_los_cursos():
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
+@cursos_db_bp.route('/cursosporusuario/<int:user_id>', methods=['GET'])
+def obtener_cursos_por_usuario_id(user_id):
+    try:
+        cursos = obtener_cursos_por_usuario(user_id)
+        return jsonify({'cursos': cursos})
+    except Exception as err:
+        return jsonify({'error': str(err)}), 500
+    
 # Ruta para obtener un curso por ID
 @cursos_db_bp.route('/cursos/<int:curso_id>', methods=['GET'])
 def obtener_curso_por_id_route(curso_id):
@@ -40,6 +49,7 @@ def obtener_curso_por_id_route(curso_id):
             return jsonify({"mensaje": "Curso no encontrado"}), 404
     except Exception as err:
         return jsonify({"error": str(err)}), 500
+
 
 # Ruta para actualizar un curso por ID
 @cursos_db_bp.route('/cursos/<int:curso_id>', methods=['PUT'])

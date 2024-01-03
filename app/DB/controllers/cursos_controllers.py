@@ -6,8 +6,8 @@ def crear_curso(curso):
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             # Insertar nuevo curso
-            sql_curso = "INSERT INTO cursos (curso, materia, activo, prueba_id, user_id) VALUES (%s, %s, %s, %s, %s)"
-            cursor.execute(sql_curso, (curso['curso'], curso['materia'], curso['activo'], curso['prueba_id'], curso['user_id']))
+            sql_curso = "INSERT INTO cursos (curso, activo, user_id) VALUES (%s, %s, %s)"
+            cursor.execute(sql_curso, (curso['curso'], curso['activo'], curso['user_id']))
             conexion.commit()
 
             # Obtener el ID del curso recién insertado
@@ -24,6 +24,22 @@ def crear_curso(curso):
     finally:
         if conexion:
             conexion.close()
+
+def obtener_cursos_por_usuario(user_id):
+    cursos = []
+    try:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            # Obtener todos los cursos asociados al usuario
+            sql = "SELECT * FROM cursos WHERE user_id = %s"
+            cursor.execute(sql, (user_id,))
+            cursos = cursor.fetchall()
+    except Exception as err:
+        print(f'Error al obtener cursos para el usuario con ID {user_id}:', err)
+    finally:
+        if conexion:
+            conexion.close()
+    return cursos
 
 def obtener_cursos():
     cursos = []
@@ -62,13 +78,10 @@ def actualizar_curso(curso_id, nuevos_datos):
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             # Actualizar un curso por ID
-            sql = "UPDATE cursos SET curso = %s, materia = %s, activo = %s, id_alumnos = %s, prueba_id = %s, user_id = %s WHERE id = %s"
+            sql = "UPDATE cursos SET curso = %s, activo = %s, prueba_id = %s, user_id = %s WHERE id = %s"
             cursor.execute(sql, (
                 nuevos_datos['curso'],
-                nuevos_datos['materia'],
                 nuevos_datos['activo'],
-                nuevos_datos['id_alumnos'],
-                nuevos_datos['prueba_id'],
                 nuevos_datos['user_id'],
                 curso_id
             ))
