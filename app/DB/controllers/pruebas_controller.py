@@ -5,16 +5,27 @@ def crear_prueba(prueba):
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            # Insertar nueva prueba
-            sql = "INSERT INTO pruebas (nota, activo, id_hoja_de_respuestas) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (prueba['nota'], prueba['activo'], prueba['id_hoja_de_respuestas']))
-        conexion.commit()
+            # Verificar si el id_alumno existe en la tabla alumnos
+            cursor.execute("SELECT id FROM alumnos WHERE id = %s", (prueba['id_alumno'],))
+            id_alumno_existente = cursor.fetchone()
+
+            # Verificar si el id_curso existe en la tabla cursos
+            cursor.execute("SELECT id FROM cursos WHERE id = %s", (prueba['id_curso'],))
+            id_curso_existente = cursor.fetchone()
+
+            if id_alumno_existente and id_curso_existente:
+                # Insertar nueva prueba si ambos existen
+                sql = "INSERT INTO pruebas (nota, activo, id_hoja_de_respuestas, id_curso, id_alumno) VALUES (%s, %s, %s, %s, %s)"
+                cursor.execute(sql, (prueba['nota'], prueba['activo'], prueba['id_hoja_de_respuestas'], prueba['id_curso'], prueba['id_alumno']))
+                conexion.commit()
+            else:
+                print(f"El id_alumno {prueba['id_alumno']} o el id_curso {prueba['id_curso']} no existen en las tablas correspondientes.")
     except Exception as err:
         print('Error al crear prueba:', err)
     finally:
         if conexion:
             conexion.close()
-
+            
 def obtener_pruebas():
     pruebas = []
     try:

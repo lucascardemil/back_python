@@ -7,12 +7,14 @@ def crear_hoja_respuestas(hoja_respuestas):
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
             # Convertir la lista de respuestas a una cadena JSON
+            preguntas_json = json.dumps(hoja_respuestas['preguntas'])
             respuestas_json = json.dumps(hoja_respuestas['respuestas'])
 
             # Insertar nueva hoja de respuestas
             sql = "INSERT INTO hojas_de_respuestas (asignatura, alternativas, preguntas, respuestas, usuario_id) VALUES (%s, %s, %s, %s, %s)"
-            cursor.execute(sql, (hoja_respuestas['asignatura'], hoja_respuestas['alternativas'], hoja_respuestas['preguntas'], respuestas_json, hoja_respuestas['usuario_id']))
+            cursor.execute(sql, (hoja_respuestas['asignatura'], hoja_respuestas['alternativas'], preguntas_json, respuestas_json, hoja_respuestas['usuario_id']))
         conexion.commit()
+        print('Hoja de respuestas creada exitosamente')
     except Exception as err:
         print('Error al crear hoja de respuestas:', err)
     finally:

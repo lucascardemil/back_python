@@ -9,8 +9,9 @@ import imutils
 import numpy as np
 
 def process_image(request_data):
-    ANSWER_KEY = {0: 1, 1: 4, 2: 0, 3: 3, 4: 1}
     
+    # ANSWER_KEY = request_data.get("ANSWER_KEY", {})  
+    ANSWER_KEY = {0: 1, 1: 4, 2: 0, 3: 2, 4: 1} 
     # Decode Base64 image data
     image_data = request_data.get("image", "")
     # image_data = image_data.split(",")[1]  # Get the actual Base64-encoded data
@@ -79,14 +80,17 @@ def process_image(request_data):
             cv2.drawContours(paper, [cnts[k]], -1, color, 3)
 
         score = (correct / 5.0) * 100
-        cv2.putText(paper, "{:.2f}%".format(score), (10, 30),
+        porcentaje = max(0.0, min(100.0, score))
+        nota = round((porcentaje / 100) * 7.0, 1)        
+
+        cv2.putText(paper, "{:.1f}".format(nota), (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
 
         # resultado_escritura = cv2.imwrite(os.path.join("./reviewed/", f"{name}.jpg"), paper)
         _, paper_encoded = cv2.imencode('.png', paper)
         paper_base64 = base64.b64encode(paper_encoded.tobytes()).decode('utf-8')
         paper_base64_with_prefix = f'data:image/png;base64,{paper_base64}'
-        return {'image': paper_base64_with_prefix, 'score': score}
+        return {'image': paper_base64_with_prefix, 'nota': nota}
     else:
         # Handle the case when questionCnts is empty
         return {'error': 'No contours found in the image'}

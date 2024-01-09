@@ -15,6 +15,7 @@ hoja_respuestas_bp = Blueprint('hoja_respuestas', __name__)
 def crear_nueva_hoja_respuestas():
     try:
         datos_hoja_respuestas = request.json
+        print('Datos recibidos:', datos_hoja_respuestas)
         crear_hoja_respuestas(datos_hoja_respuestas)
         return jsonify({"mensaje": "Hoja de respuestas creada exitosamente"}), 201
     except Exception as err:

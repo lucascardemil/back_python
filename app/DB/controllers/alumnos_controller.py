@@ -7,28 +7,39 @@ def crear_alumno(alumno):
         with obtener_conexion() as conexion:
             sql = "INSERT INTO alumnos (nombre, apellido, QR, id_curso) VALUES (%s, %s, %s, %s)"
 
-            qr_info = f"nombre: {alumno['nombre']}\napellido: {alumno['apellido']}"
-
-            # Genera el código QR y obtiene la ruta de la imagen
-            qr_path = generar_qr_imagen(alumno['nombre'], alumno['apellido'], qr_info)
-
-            print(qr_path, "path")
 
             with conexion.cursor() as cursor:
                 cursor.execute(sql, (
                     alumno['nombre'],
                     alumno['apellido'],
-                    qr_path,
-                    alumno['id_curso']  # Utiliza directamente el identificador del curso
+                    alumno['QR'],
+                    alumno['id_curso']
                 ))
 
-            conexion.commit()
+                # Obtén el ID del alumno recién creado
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                id_alumno = cursor.fetchone()[0]
 
-            return jsonify({"status": "success", "message": "Alumno creado correctamente", "QR": qr_path})
+                qr_info = {
+                    "nombre": alumno['nombre'],
+                    "apellido": alumno['apellido'],
+                    "id_curso": alumno['id_curso'],
+                    "id_alumno": id_alumno
+                }
+                # Actualiza el QR con el ID del alumno
+                qr_path2 = generar_qr_imagen(
+                    alumno['nombre'],
+                    alumno['apellido'],
+                    qr_info,
+                )
+
+                # Actualiza la fila del alumno con la nueva información del QR
+                cursor.execute("UPDATE alumnos SET QR = %s WHERE id = %s", (qr_path2['ruta_qr'], id_alumno))
+
+            conexion.commit()
     except Exception as err:
-        print('Error al crear alumno:', err)
-        return jsonify({"status": "error", "message": f"Error al crear alumno: {err}"}), 500
-              
+        print(f'Error al crear alumno: {err}')
+
 def obtener_alumnos():
     alumnos = []
     try:
@@ -82,17 +93,31 @@ def actualizar_alumno(alumno_id, nuevos_datos):
     try:
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
+            # Obtén el ID del curso actual para mantenerlo
+            cursor.execute("SELECT id_curso FROM alumnos WHERE id = %s", (alumno_id,))
+            id_curso_actual = cursor.fetchone()[0]
+
             # Actualizar un alumno por ID
-            sql = "UPDATE alumnos SET nombre = %s, apellido = %s, QR = %s WHERE id = %s"
-            nuevo_qr = generar_qr_imagen(nuevos_datos['nombre'], nuevos_datos['apellido'], f"{nuevos_datos['nombre']} {nuevos_datos['apellido']}")
+            sql = "UPDATE alumnos SET nombre = %s, apellido = %s, QR = %s, id_curso = %s WHERE id = %s"
+
+            # Genera un nuevo QR
+            nuevo_qr_info = f"nombre: {nuevos_datos['nombre']}\napellido: {nuevos_datos['apellido']}\nid_curso: {id_curso_actual}\nid_alumno: {alumno_id}"
+            nuevo_qr = generar_qr_imagen(
+                nuevos_datos['nombre'],
+                nuevos_datos['apellido'],
+                nuevo_qr_info
+            )
+
+            # Extrae la ruta del QR del diccionario
+            nuevo_qr_ruta = nuevo_qr.get('ruta_qr', '')
+
             cursor.execute(sql, (
                 nuevos_datos['nombre'],
                 nuevos_datos['apellido'],
-                nuevo_qr,
+                nuevo_qr_ruta,  # Pasa solo la ruta del QR, no el diccionario completo
+                id_curso_actual,  # Usa el ID del curso actual
                 alumno_id
             ))
-
-            # Después de actualizar el nombre y el apellido, genera un nuevo QR
 
         conexion.commit()
     except Exception as err:
