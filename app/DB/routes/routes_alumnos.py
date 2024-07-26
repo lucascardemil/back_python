@@ -17,10 +17,10 @@ alumnos_db_bp = Blueprint('alumnos_db', __name__)
 def crear_nuevo_alumno():
     try:
         datos_alumno = request.json
-        crear_alumno(datos_alumno)
-        return jsonify({"mensaje": "Alumno creado exitosamente"}), 201
+        alumno = crear_alumno(datos_alumno)
+        return jsonify({"status": True, "mensaje": "Alumno creado exitosamente", 'alumno': alumno}), 201
     except Exception as err:
-        return jsonify({"error": str(err)}), 500
+        return jsonify({"status": False, "error": str(err)}), 500
 
 # Ruta para obtener todos los alumnos
 @alumnos_db_bp.route('/alumnos', methods=['GET'])
@@ -35,19 +35,6 @@ def obtener_todos_los_alumnos():
 def obtener_alumnos_por_curso_route(curso_id):
     try:
         alumnos = obtener_alumnos_por_curso(curso_id)
-        # # Serializar manualmente los datos
-        # alumnos_serializados = [
-        #     {
-        #         "id": alumno[0],
-        #         "nombre": alumno[1],
-        #         "apellido": alumno[2],
-        #         "id_prueba": alumno[3],
-        #         "QR": str(alumno[6]),  # Convertir el blob a una cadena
-        #         "id_respuestas_alumnos": alumno[4],
-        #         "id_curso": alumno[5]
-        #     }
-        #     for alumno in alumnos
-        # ]
         return jsonify(alumnos), 200
     except Exception as err:
         print(f'Error en obtener_alumnos_por_curso_route: {err}')

@@ -20,6 +20,7 @@ def crear_hoja_respuestas(hoja_respuestas):
     finally:
         if conexion:
             conexion.close()
+    return {"asignatura": hoja_respuestas['asignatura'], "alternativas": hoja_respuestas['alternativas'], "preguntas": preguntas_json, "respuestas": respuestas_json, "usuario_id": hoja_respuestas['usuario_id']}
 
 
 def obtener_hojas_respuestas_por_usuario(usuario_id: int) -> List[Dict]:

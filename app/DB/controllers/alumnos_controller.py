@@ -3,42 +3,57 @@ from app.api.generator_qr import generar_qr_imagen
 from flask import jsonify
 
 def crear_alumno(alumno):
+    qr_info = None
     try:
         with obtener_conexion() as conexion:
-            sql = "INSERT INTO alumnos (nombre, apellido, QR, id_curso) VALUES (%s, %s, %s, %s)"
-
-
             with conexion.cursor() as cursor:
-                cursor.execute(sql, (
+                # Insertar el nuevo alumno
+                sql_insert = "INSERT INTO alumnos (nombre, apellido, QR, id_curso) VALUES (%s, %s, %s, %s)"
+                cursor.execute(sql_insert, (
                     alumno['nombre'],
                     alumno['apellido'],
                     alumno['QR'],
                     alumno['id_curso']
                 ))
-
-                # Obtén el ID del alumno recién creado
+                
+                # Obtener el ID del alumno recién creado
                 cursor.execute("SELECT LAST_INSERT_ID()")
                 id_alumno = cursor.fetchone()[0]
 
+                # Crear la información del QR
                 qr_info = {
                     "nombre": alumno['nombre'],
                     "apellido": alumno['apellido'],
                     "id_curso": alumno['id_curso'],
                     "id_alumno": id_alumno
                 }
-                # Actualiza el QR con el ID del alumno
+
+                # Generar la imagen del QR
                 qr_path2 = generar_qr_imagen(
                     alumno['nombre'],
                     alumno['apellido'],
-                    qr_info,
+                    qr_info
                 )
 
-                # Actualiza la fila del alumno con la nueva información del QR
-                cursor.execute("UPDATE alumnos SET QR = %s WHERE id = %s", (qr_path2['ruta_qr'], id_alumno))
+                # Actualizar la fila del alumno con la nueva información del QR
+                sql_update = "UPDATE alumnos SET QR = %s WHERE id = %s"
+                cursor.execute(sql_update, (qr_path2['ruta_qr'], id_alumno))
 
+            # Confirmar la transacción
             conexion.commit()
+
     except Exception as err:
         print(f'Error al crear alumno: {err}')
+        try:
+            if conexion and not conexion.closed:
+                conexion.rollback()
+        except Exception as rollback_err:
+            print(f'Error al hacer rollback: {rollback_err}')
+    
+    return {"nombre": alumno['nombre'], "apellido": alumno['apellido'], "id_curso": alumno['id_curso'], "id_alumno": id_alumno, "qr": qr_path2['ruta_qr']}
+
+
+
 
 def obtener_alumnos():
     alumnos = []

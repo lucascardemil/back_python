@@ -14,16 +14,17 @@ def crear_curso(curso):
             id_curso = cursor.lastrowid
 
             # Insertar en la tabla de relación cursos_alumnos
-            for id_alumno in curso['id_alumnos']:
-                sql_relacion = "INSERT INTO cursos_alumnos (id_curso, id_alumno) VALUES (%s, %s)"
-                cursor.execute(sql_relacion, (id_curso, id_alumno))
-                conexion.commit()
+            # for id_alumno in curso['id_alumnos']:
+            #     sql_relacion = "INSERT INTO cursos_alumnos (id_curso, id_alumno) VALUES (%s, %s)"
+            #     cursor.execute(sql_relacion, (id_curso, id_alumno))
+            #     conexion.commit()
 
     except Exception as err:
         print('Error al crear curso:', err)
     finally:
         if conexion:
             conexion.close()
+    return id_curso
 
 def obtener_cursos_por_usuario(user_id):
     cursos = []
@@ -65,7 +66,13 @@ def obtener_curso_por_id(curso_id):
             # Obtener un curso por ID
             sql = "SELECT * FROM cursos WHERE id = %s"
             cursor.execute(sql, (curso_id,))
-            curso = cursor.fetchone()
+            curso = cursor.fetchone()  # Esto ya será un diccionario
+            curso = {
+                "id": curso[0],
+                "curso": curso[1],
+                "activo": curso[2],
+                "user_id": curso[3]
+            }
     except Exception as err:
         print(f'Error al obtener curso con ID {curso_id}:', err)
     finally:

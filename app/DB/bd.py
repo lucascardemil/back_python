@@ -1,10 +1,19 @@
 import pymysql
 
 def obtener_conexion():
+    # return pymysql.connect(
+    #     host='localhost',
+    #     user='root',
+    #     password='',
+    #     db='lectoromr'
+    # )
+    
     return pymysql.connect(
         host='localhost',
-        user='root',
-        password='Agustina1812',  # Agrega tu contraseña real aquí
-        db='lectorOMR',
+        user='claseac1_lectoromr',
+        password='S%!=vj8sbpy9',  # Agrega tu contraseña real aquí
+        db='claseac1_lectoromr'
     )
+
+
 

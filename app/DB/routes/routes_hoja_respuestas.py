@@ -15,11 +15,10 @@ hoja_respuestas_bp = Blueprint('hoja_respuestas', __name__)
 def crear_nueva_hoja_respuestas():
     try:
         datos_hoja_respuestas = request.json
-        print('Datos recibidos:', datos_hoja_respuestas)
-        crear_hoja_respuestas(datos_hoja_respuestas)
-        return jsonify({"mensaje": "Hoja de respuestas creada exitosamente"}), 201
+        hojas_respuestas = crear_hoja_respuestas(datos_hoja_respuestas)
+        return jsonify({"status": True, "mensaje": "Hoja de respuestas creada exitosamente", 'hojas_respuestas': hojas_respuestas}), 201
     except Exception as err:
-        return jsonify({"error": str(err)}), 500
+        return jsonify({"status": False, "error": str(err)}), 500
 
 # Ruta para obtener todas las hojas de respuestas
 @hoja_respuestas_bp.route('/hojarespuestas', methods=['GET'])
@@ -34,9 +33,9 @@ def obtener_todas_las_hojas_respuestas():
 def obtener_hojas_por_usuario(usuario_id):
     try:
         hojas_respuestas = obtener_hojas_respuestas_por_usuario(usuario_id)
-        return jsonify(hojas_respuestas), 200
+        return jsonify({"status": True, "hojas_respuestas": hojas_respuestas}), 200
     except Exception as err:
-        return jsonify({"error": str(err)}), 500
+        return jsonify({"status": False, "error": str(err)}), 500
    
 # Ruta para obtener una hoja de respuestas por ID
 @hoja_respuestas_bp.route('/hojarespuestas/<int:hoja_respuestas_id>', methods=['GET'])
