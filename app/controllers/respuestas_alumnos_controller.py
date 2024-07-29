@@ -1,6 +1,6 @@
 # app/DB/controllers/respuestas_alumnos_controller.py
 import json
-from app.DB.bd import obtener_conexion
+from back_python.app.BD.conexion import obtener_conexion
 
 def agregar_respuestas_alumnos(respuestas):
     try:

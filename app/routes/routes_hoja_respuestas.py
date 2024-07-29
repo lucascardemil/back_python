@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.DB.controllers.hoja_respuestas_controller import (
+from app.controllers.hoja_respuestas_controller import (
     crear_hoja_respuestas,
     obtener_hoja_respuestas,
     obtener_hoja_respuestas_por_id,

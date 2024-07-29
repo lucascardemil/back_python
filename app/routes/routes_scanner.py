@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
-from app.DB.controllers.scanner_controller import (
+from app.controllers.scanner_controller import (
     process_image,
     solve_test
 )
-from app.DB.controllers.respuestas_alumnos_controller import agregar_respuestas_alumnos
-from app.DB.controllers.pruebas_controller import crear_prueba
+from app.controllers.respuestas_alumnos_controller import agregar_respuestas_alumnos
+from app.controllers.pruebas_controller import crear_prueba
 
 scanner_db_bp = Blueprint('scanner', __name__)
 

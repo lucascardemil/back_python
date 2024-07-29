@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_cors import CORS  # Importa la extensión CORS
-from app.api.generator_qr import generador_qr_bp
-from app.DB.routes.routes_users import users_db_bp 
-from app.DB.routes.routes_hoja_respuestas import hoja_respuestas_bp
-from app.DB.routes.routes_pruebas import pruebas_db_bp
-from app.DB.routes.routes_alumnos import alumnos_db_bp
-from app.DB.routes.routes_cursos import cursos_db_bp
-from app.DB.routes.routes_scanner import scanner_db_bp
+from app.routes.routes_qr import generador_qr_bp
+from app.routes.routes_users import users_db_bp 
+from app.routes.routes_hoja_respuestas import hoja_respuestas_bp
+from app.routes.routes_pruebas import pruebas_db_bp
+from app.routes.routes_alumnos import alumnos_db_bp
+from app.routes.routes_cursos import cursos_db_bp
+from app.routes.routes_scanner import scanner_db_bp
 app = Flask(__name__)
 
 # Configuración de la aplicación, si es necesario

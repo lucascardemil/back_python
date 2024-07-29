@@ -8,7 +8,7 @@ generador_qr_bp = Blueprint('generador_qr', __name__)
 
 # ...
 
-@generador_qr_bp.route('/api/generarqr', methods=['POST'])
+@generador_qr_bp.route('/generarqr', methods=['POST'])
 def generar_qr_imagen(nombre, apellido, info_string):
 
     try:

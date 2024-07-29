@@ -1,6 +1,6 @@
 # app/DB/routes/alumnos_routes.py
 from flask import Blueprint, request, jsonify
-from app.DB.controllers.alumnos_controller import (
+from app.controllers.alumnos_controller import (
     crear_alumno,
     obtener_alumnos,
     obtener_alumno_por_id,

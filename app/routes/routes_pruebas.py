@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.DB.controllers.pruebas_controller import crear_prueba, obtener_pruebas, obtener_prueba_por_id, actualizar_prueba, eliminar_prueba
+from app.controllers.pruebas_controller import crear_prueba, obtener_pruebas, obtener_prueba_por_id, actualizar_prueba, eliminar_prueba
 
 pruebas_db_bp = Blueprint('pruebas_db', __name__)
 

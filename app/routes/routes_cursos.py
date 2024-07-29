@@ -1,6 +1,6 @@
 # app/DB/routes/cursos_routes.py
 from flask import Blueprint, request, jsonify
-from app.DB.controllers.cursos_controllers import (
+from app.controllers.cursos_controllers import (
     crear_curso,
     obtener_cursos,
     obtener_curso_por_id,

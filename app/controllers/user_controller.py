@@ -1,4 +1,4 @@
-from app.DB.bd import obtener_conexion
+from back_python.app.BD.conexion import obtener_conexion
 
 def crear_usuario(usuario):
     try:
