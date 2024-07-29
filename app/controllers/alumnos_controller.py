@@ -1,5 +1,5 @@
-from back_python.app.BD.conexion import obtener_conexion
-from back_python.app.routes.routes_qr import generar_qr_imagen
+from app.BD.conexion import obtener_conexion
+from app.routes.routes_qr import generar_qr_imagen
 from flask import jsonify
 
 def crear_alumno(alumno):

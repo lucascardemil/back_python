@@ -1,5 +1,5 @@
 # app/DB/controllers/pruebas_controller.py
-from back_python.app.BD.conexion import obtener_conexion
+from app.BD.conexion import obtener_conexion
 
 def crear_prueba(prueba):
     try:
