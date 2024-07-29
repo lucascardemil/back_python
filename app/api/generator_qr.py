@@ -1,9 +1,8 @@
 # generador_qr.py
 import os
-from flask import Blueprint, jsonify, request
+from flask import Blueprint
 import qrcode
-from PIL import Image
-import io
+
 
 generador_qr_bp = Blueprint('generador_qr', __name__)
 

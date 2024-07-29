@@ -1,5 +1,3 @@
-import math
-from app.DB.bd import obtener_conexion
 import cv2
 from imutils.perspective import four_point_transform
 from imutils import contours
